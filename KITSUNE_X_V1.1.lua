@@ -1,189 +1,99 @@
--- KITSUNE X V 1.0 BY StewartTristan5
+--// LocalScript, taruh di StarterPlayerScripts
 
 local Players = game:GetService("Players")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local player = Players.LocalPlayer
 
--- UI Setup
-local ScreenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
-ScreenGui.Name = "KitsuneXUI"
-ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+-- Buat ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Parent = player:WaitForChild("PlayerGui")
 
--- Main Frame
-local MainFrame = Instance.new("Frame", ScreenGui)
-MainFrame.Name = "MainFrame"
-MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-MainFrame.Position = UDim2.new(0.3, 0, 0.3, 0)
-MainFrame.Size = UDim2.new(0, 400, 0, 350)
-MainFrame.Visible = true
-MainFrame.Active = true
-MainFrame.Draggable = true
+-- Frame utama
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 250, 0, 150)
+mainFrame.Position = UDim2.new(0.5, -125, 0.5, -75)
+mainFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+mainFrame.Visible = false
+mainFrame.Parent = screenGui
 
--- Mod Menu Icon (Kitsune Image)
-local ModMenuIcon = Instance.new("ImageButton", ScreenGui)
-ModMenuIcon.Size = UDim2.new(0, 60, 0, 60)
-ModMenuIcon.Position = UDim2.new(0.9, 0, 0.9, 0)
-ModMenuIcon.BackgroundTransparency = 1
-ModMenuIcon.Image = "rbxassetid://108849426415935"
-ModMenuIcon.Visible = false
-ModMenuIcon.MouseButton1Click:Connect(function()
-	MainFrame.Visible = true
-	ModMenuIcon.Visible = false
-end)
+-- Ujung bulat
+mainFrame.BackgroundTransparency = 0.1
+mainFrame.BorderSizePixel = 0
+mainFrame.ClipsDescendants = true
 
--- Close Button
-local CloseBtn = Instance.new("TextButton", MainFrame)
-CloseBtn.Text = "X"
-CloseBtn.Size = UDim2.new(0, 30, 0, 30)
-CloseBtn.Position = UDim2.new(1, -35, 0, 5)
-CloseBtn.BackgroundColor3 = Color3.fromRGB(170, 0, 0)
-CloseBtn.TextColor3 = Color3.new(1,1,1)
-CloseBtn.Font = Enum.Font.GothamBold
-CloseBtn.TextSize = 20
-CloseBtn.MouseButton1Click:Connect(function()
-	MainFrame.Visible = false
-	ModMenuIcon.Visible = true
-end)
+-- Tombol buka/tutup
+local toggleButton = Instance.new("TextButton")
+toggleButton.Size = UDim2.new(0, 100, 0, 40)
+toggleButton.Position = UDim2.new(0, 10, 0, 10)
+toggleButton.Text = "Open Avatar Copier"
+toggleButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+toggleButton.TextColor3 = Color3.new(1, 1, 1)
+toggleButton.Parent = screenGui
 
--- Title
-local Title = Instance.new("TextLabel", MainFrame)
-Title.Text = "🌸 KITSUNE X V 1.0 🌸"
-Title.Size = UDim2.new(1, 0, 0, 30)
-Title.BackgroundTransparency = 1
-Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title.Font = Enum.Font.GothamBold
-Title.TextSize = 20
+-- TextBox buat input username
+local usernameBox = Instance.new("TextBox")
+usernameBox.Size = UDim2.new(0, 200, 0, 30)
+usernameBox.Position = UDim2.new(0, 25, 0, 25)
+usernameBox.PlaceholderText = "Masukin Username..."
+usernameBox.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+usernameBox.TextColor3 = Color3.new(1,1,1)
+usernameBox.Parent = mainFrame
 
--- Settings Table
-local Settings = {
-	AutoBuySeed = false,
-	SeedType = "Tomato",
-	AutoBuyGear = false,
-	GearType = "WateringCan",
-	CheckEggPet = false
-}
+-- Tombol Copy Avatar
+local copyButton = Instance.new("TextButton")
+copyButton.Size = UDim2.new(0, 200, 0, 30)
+copyButton.Position = UDim2.new(0, 25, 0, 70)
+copyButton.Text = "Copy Avatar"
+copyButton.BackgroundColor3 = Color3.fromRGB(90, 90, 90)
+copyButton.TextColor3 = Color3.new(1,1,1)
+copyButton.Parent = mainFrame
 
--- Seed Input
-local SeedLabel = Instance.new("TextLabel", MainFrame)
-SeedLabel.Text = "Seed Type:"
-SeedLabel.Position = UDim2.new(0, 10, 0, 40)
-SeedLabel.Size = UDim2.new(0, 100, 0, 25)
-SeedLabel.TextColor3 = Color3.new(1,1,1)
-SeedLabel.BackgroundTransparency = 1
-
-local SeedBox = Instance.new("TextBox", MainFrame)
-SeedBox.PlaceholderText = "Ex: Tomato, Corn"
-SeedBox.Text = Settings.SeedType
-SeedBox.Position = UDim2.new(0, 120, 0, 40)
-SeedBox.Size = UDim2.new(0, 150, 0, 25)
-SeedBox.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-SeedBox.TextColor3 = Color3.new(1,1,1)
-SeedBox.FocusLost:Connect(function()
-	Settings.SeedType = SeedBox.Text
-end)
-
--- Gear Input
-local GearLabel = Instance.new("TextLabel", MainFrame)
-GearLabel.Text = "Gear Type:"
-GearLabel.Position = UDim2.new(0, 10, 0, 70)
-GearLabel.Size = UDim2.new(0, 100, 0, 25)
-GearLabel.TextColor3 = Color3.new(1,1,1)
-GearLabel.BackgroundTransparency = 1
-
-local GearBox = Instance.new("TextBox", MainFrame)
-GearBox.PlaceholderText = "Ex: WateringCan"
-GearBox.Text = Settings.GearType
-GearBox.Position = UDim2.new(0, 120, 0, 70)
-GearBox.Size = UDim2.new(0, 150, 0, 25)
-GearBox.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-GearBox.TextColor3 = Color3.new(1,1,1)
-GearBox.FocusLost:Connect(function()
-	Settings.GearType = GearBox.Text
-end)
-
--- Toggle Creator
-local function createToggle(name, positionY, callback)
-	local Toggle = Instance.new("TextButton", MainFrame)
-	Toggle.Size = UDim2.new(0, 350, 0, 30)
-	Toggle.Position = UDim2.new(0, 25, 0, positionY)
-	Toggle.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-	Toggle.TextColor3 = Color3.new(1,1,1)
-	Toggle.Text = name .. ": OFF"
-	Toggle.Font = Enum.Font.Gotham
-	Toggle.TextSize = 16
-	Toggle.MouseButton1Click:Connect(function()
-		Settings[name] = not Settings[name]
-		Toggle.Text = name .. ": " .. (Settings[name] and "ON" or "OFF")
-		if callback then callback(Settings[name]) end
+-- Fungsi copy avatar
+local function CopyAvatar(username)
+	local success, targetUserId = pcall(function()
+		return Players:GetUserIdFromNameAsync(username)
 	end)
-end
 
--- Functional Toggles
-createToggle("AutoBuySeed", 110, function(on)
-	while on and Settings.AutoBuySeed do
-		ReplicatedStorage:WaitForChild("Events"):WaitForChild("BuySeed"):FireServer(Settings.SeedType)
-		task.wait(1)
-	end
-end)
+	if success and targetUserId then
+		local success2, characterModel = pcall(function()
+			return Players:GetCharacterAppearanceAsync(targetUserId)
+		end)
 
-createToggle("AutoBuyGear", 150, function(on)
-	while on and Settings.AutoBuyGear do
-		ReplicatedStorage:WaitForChild("Events"):WaitForChild("BuyGear"):FireServer(Settings.GearType)
-		task.wait(2)
-	end
-end)
-
-createToggle("CheckEggPet", 190, function(on)
-	if on then
-		for _, egg in pairs(workspace:WaitForChild("Eggs"):GetChildren()) do
-			print("📦 Egg: " .. egg.Name)
-			if egg:FindFirstChild("Pets") then
-				for _, pet in pairs(egg.Pets:GetChildren()) do
-					print(" 🐾 Pet: " .. pet.Name)
+		if success2 and characterModel then
+			local char = player.Character or player.CharacterAdded:Wait()
+			
+			-- hapus aksesoris lama
+			for _, obj in ipairs(char:GetChildren()) do
+				if obj:IsA("Accessory") or obj:IsA("Shirt") or obj:IsA("Pants") or obj:IsA("ShirtGraphic") or obj:IsA("BodyColors") then
+					obj:Destroy()
 				end
 			end
+
+			-- clone dari target
+			for _, obj in ipairs(characterModel:GetChildren()) do
+				if obj:IsA("Accessory") or obj:IsA("Shirt") or obj:IsA("Pants") or obj:IsA("ShirtGraphic") or obj:IsA("BodyColors") then
+					obj:Clone().Parent = char
+				end
+			end
+		else
+			warn("Gagal ambil avatar!")
 		end
+	else
+		warn("Username tidak ditemukan!")
+	end
+end
+
+-- Event tombol
+copyButton.MouseButton1Click:Connect(function()
+	if usernameBox.Text ~= "" then
+		CopyAvatar(usernameBox.Text)
 	end
 end)
 
-print("✅ Loaded KITSUNE X V 1.0 BY StewartTristan5")
-
-
-
--- Pastikan mainGui ada
-local mainGui = game.CoreGui:FindFirstChild("KITSUNE_GUI")
-if not mainGui then
-    warn("mainGui tidak ditemukan!")
-    return
-end
-
--- Mod Menu Kitsune
-local modMenu = Instance.new("ImageButton")
-modMenu.Name = "KitsuneModMenu"
-modMenu.Parent = game.CoreGui
-modMenu.BackgroundTransparency = 1
-modMenu.Size = UDim2.new(0, 100, 0, 100)
-modMenu.Position = UDim2.new(0, 20, 0, 300)
-modMenu.Image = "https://i.ibb.co/DY4dGJt/kitsune-icon.png"
-modMenu.Visible = false
-modMenu.Draggable = true
-modMenu.Active = true
-modMenu.ZIndex = 999
-
-modMenu.MouseButton1Click:Connect(function()
-    print("Mod menu diklik, membuka GUI utama")
-    mainGui.Enabled = true
-    modMenu.Visible = false
+toggleButton.MouseButton1Click:Connect(function()
+	mainFrame.Visible = not mainFrame.Visible
+	if mainFrame.Visible then
+		toggleButton.Text = "Close Avatar Copier"
+	else
+		toggleButton.Text = "Open Avatar Copier"
+	end
 end)
-
--- Cari tombol Close dengan lebih aman
-local closeButton = mainGui:FindFirstChild("CloseButton", true)
-if closeButton then
-    closeButton.MouseButton1Click:Connect(function()
-        print("GUI utama ditutup, menampilkan mod menu")
-        mainGui.Enabled = false
-        modMenu.Visible = true
-    end)
-else
-    warn("Tombol Close tidak ditemukan!")
-end
